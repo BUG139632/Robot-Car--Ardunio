@@ -1,0 +1,92 @@
+# include <Arduino.h>
+struct Motor
+{
+    int motor1;
+    int motor2;
+};
+#define FORWARD    0
+#define BACKWARD   1
+#define TURNLEFT   2
+#define TURNRIGHT  3
+#define STOP       4
+struct Motor LF, RF, RB, LB;
+// LF 1 RF 2 RB 3 LB 4
+void setup()
+{
+    LF.motor1 = 2;
+    LF.motor2 = 3;
+    RF.motor1 = 4;
+    RF.motor2 = 5;
+    RB.motor1 = 6;
+    RB.motor2 = 7;
+    LB.motor1 = 8;
+    LB.motor2 = 9;
+    pinMode(LF.motor1, OUTPUT);
+    pinMode(LF.motor2, OUTPUT);
+    pinMode(RF.motor1, OUTPUT);
+    pinMode(RF.motor2, OUTPUT);
+    pinMode(RB.motor1, OUTPUT);
+    pinMode(RB.motor2, OUTPUT);
+    pinMode(LB.motor1, OUTPUT);
+    pinMode(LB.motor2, OUTPUT);
+}
+void loop()
+{
+    for(int i=0; i<5; i++)
+        MotorRun(i);
+}
+void MotorPatternForward( struct Motor Motor )
+{
+    digitalWrite(Motor.motor1, HIGH);
+    digitalWrite(Motor.motor2, LOW);
+}
+void MotorPatternBack( struct Motor Motor )
+{
+    digitalWrite(Motor.motor1, LOW);
+    digitalWrite(Motor.motor2, HIGH);
+}
+void MotorPatternStop( struct Motor Motor )
+{
+    digitalWrite(Motor.motor1, LOW);
+    digitalWrite(Motor.motor2, LOW);
+}
+void MotorRun( int cmd )
+{
+    switch(cmd)
+    {
+        case 0:
+        Serial.println("FORWARD"); //输出状态
+        MotorPatternForward(LF);
+        MotorPatternForward(RF);
+        MotorPatternForward(RB);
+        MotorPatternForward(LB);
+        break;
+        case 1:
+        Serial.println("BACKWARD"); //输出状态
+        MotorPatternBack(LF);
+        MotorPatternBack(RF);
+        MotorPatternBack(RB);
+        MotorPatternBack(LB);
+        break;
+        case 2:
+        Serial.println("TURN LEFT"); //输出状态
+        MotorPatternForward(LF);
+        MotorPatternBack(RF);
+        MotorPatternForward(RB);
+        MotorPatternBack(LB);
+        break;
+        case 3:
+        Serial.println("TURN RIGHT"); //输出状态
+        MotorPatternBack(LF);
+        MotorPatternForward(RF);
+        MotorPatternBack(RB);
+        MotorPatternForward(LB);
+        break;
+        case 4:
+        Serial.println("STOP"); //输出状态
+        MotorPatternStop(LF);
+        MotorPatternStop(LB);
+        MotorPatternStop(RF);
+        MotorPatternStop(RB);
+    }
+}
