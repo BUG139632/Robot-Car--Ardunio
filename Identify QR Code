@@ -1,0 +1,31 @@
+#include <Arduino.h>
+#include <SoftwareSerial.h>
+SoftwareSerial mySerial(10,11);//RX TX
+void setup()
+{
+    //硬件串口波特率
+    Serial.begin(19200);
+    //软件串口波特率
+    mySerial.begin(19200);
+}
+void loop()
+{
+    //如果硬件串口有数据
+    if(Serial.available())
+    {
+        char temp = Serial.read();
+        if (temp=='1'||temp=='2'||temp=='3')
+        {
+            //从硬件串口读出一字节，写入软件串口
+            Serial.println(temp);
+            mySerial.write(temp);
+        }
+        else
+        {
+            Serial.println("It isnot correct")
+        }
+    }
+    //如果软件串口有数据
+    if(mySerial.available())
+        //从软件串口读出一字节，写入硬件串口
+        Serial.write(mySerial.read());
