@@ -1,0 +1,42 @@
+# include <Arduino.h>
+struct UlSensorPin
+{
+    int TrigPin;
+    int EchoPin;
+} XPin, YPin;
+float dis, cm, temp;
+void setup()
+{
+    Serial.begin(9600); 
+    XPin.TrigPin = 22;
+    XPin.EchoPin = 23;
+    YPin.TrigPin = 24;
+    YPin.EchoPin = 25;  
+    pinMode(XPin.TrigPin, OUTPUT);
+    pinMode(XPin.EchoPin, INPUT);
+    pinMode(YPin.TrigPin, OUTPUT);
+    pinMode(YPin.EchoPin, INPUT);
+}
+void loop()
+{
+    Serial.print("X: ");
+    getDistance(XPin);
+    Serial.print("Y: ");
+    getDistance(YPin);
+}
+float getDistance(struct UlSensorPin Pin)
+{
+    //给Trig发送一个低高低的短时间脉冲,触发测距
+    digitalWrite(Pin.TrigPin, LOW);   //给Trig发送一个低电平
+    delayMicroseconds(2);         //等待 2μs
+    digitalWrite(Pin.TrigPin, HIGH);  //给Trig发送一个高电平
+    delayMicroseconds(10);        //等待 10μs
+    digitalWrite(Pin.TrigPin, LOW);   //给Trig发送一个低电平
+    temp = float(pulseIn(Pin.EchoPin, HIGH)); //存储回波等待时间,
+    cm = (temp * 17 )/1000;         //把回波时间换算成cm
+    cm = (int(cm * 100.0)) / 100.0; //保留两位小数 
+    Serial.print(cm);      // 串口输出距离换算成cm的结果
+    Serial.print("cm");
+    Serial.println();
+    return cm;
+}
